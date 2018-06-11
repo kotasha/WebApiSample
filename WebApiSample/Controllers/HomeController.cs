@@ -20,33 +20,24 @@ namespace WebApiSample.Controllers
         {
             var connectionString = ConfigurationManager.ConnectionStrings["LoggingDB"].ConnectionString;
             connection = new SqlConnection(connectionString);
+            //connection.Open();
 
         }
 
         [HttpPost]
         public void CreateLog(DeviceLog deviceLog)
         {
-            string query = "INSERT INTO dbo.DeviceLog (deviceId, userId, logtime) " +
+            string query = "INSERT INTO DeviceLog (deviceId, userId, logtime) " +
                    "VALUES (@deviceId, @userId, @logtime) ";
-
-            // create connection and command
-            //using (SqlConnection cn = new SqlConnection(connectionString))
             using (SqlCommand cmd = new SqlCommand(query, connection))
             {
-                // define parameters and their values
                 cmd.Parameters.Add("@deviceId", SqlDbType.VarChar, 50).Value = deviceLog.DeviceId;
                 cmd.Parameters.Add("@userId", SqlDbType.VarChar, 50).Value = deviceLog.UserId;
                 cmd.Parameters.Add("@logtime", SqlDbType.DateTime).Value = DateTime.Now;
-
-                // open connection, execute INSERT, close connection
                 connection.Open();
                 cmd.ExecuteNonQuery();
-                connection.Close();
-                //String sSQLCommand = "INSERT INTO DeviceLog(deviceId, userId,logtime) VALUES(\"" + deviceLog.DeviceId + "\",\"" + deviceLog.UserId + "\"," + deviceLog.LogTime+")";
-                ////var command = new SqlCommand { Connection = connection, CommandType = CommandType.Text, CommandText = sSQLCommand };
-                //connection.Open();
-                //int nNoAdded = command.ExecuteNonQuery();
                 //connection.Close();
+               
             }
         }
         [HttpGet]
